@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Independent apparel inventory and deadstock forecasting research prototype by Sneha Yadav">
+<title>Fashion Inventory Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#faf8fc;color:#251735;line-height:1.5}
+header{background:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-size:21px;font-weight:800;color:#512078}
+nav a{color:#512078;text-decoration:none;margin:0 8px;font-size:13px}
+.hero{padding:55px 6%;background:linear-gradient(110deg,#f1e5fa,#e8f4e9)}
+.hero h1{font-size:clamp(29px,5vw,48px);max-width:760px;line-height:1.16}
+.hero p{max-width:650px}
+.tag{display:inline-block;background:white;padding:7px 13px;border-radius:20px;font-size:12px}
+main{max-width:1250px;margin:auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card,.panel{background:white;border:1px solid #e7deed;border-radius:16px;padding:20px;box-shadow:0 3px 12px #32124a08}
+.card{background:linear-gradient(125deg,#f6effb,#eef7f0)}
+.card small{color:#665874}
+.card strong{display:block;font-size:26px;margin-top:8px}
+.layout{display:grid;grid-template-columns:1fr 1.6fr;gap:16px;margin-top:20px}
+h2{font-size:20px;margin-top:0}
+label{display:block;font-size:13px;font-weight:bold;margin-top:12px}
+input,select{width:100%;padding:12px;margin-top:5px;border:1px solid #cbbcd7;border-radius:8px;font-size:15px;background:white}
+button{border:0;border-radius:9px;padding:14px;background:#59217e;color:white;font-weight:bold;cursor:pointer;width:100%;margin-top:20px}
+button:hover{background:#391354}
+.chart{height:300px;position:relative}
+.notice{background:#eef7ef;border-left:4px solid #348a4b;padding:15px;border-radius:8px;margin-top:18px}
+.warning{background:#fff2ee;border-left:4px solid #c85642}
+section{margin-bottom:20px}
+footer{text-align:center;background:#291439;color:white;padding:28px;margin-top:35px}
+@media(max-width:760px){.grid,.layout{grid-template-columns:1fr}.hero{padding:35px 20px}header{padding:16px}nav a{display:inline-block;margin:5px}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">♧ Fashion Inventory Intelligence</div>
+<nav>
+<a href="#tool">Inventory Tool</a>
+<a href="#forecast">Forecast</a>
+<a href="#research">Research</a>
+</nav>
+</header>
+
+<div class="hero">
+<span class="tag">Independent Research Prototype | 2026</span>
+<h1>Fashion Inventory &amp; Deadstock Predictor</h1>
+<p>Track apparel inventory, estimate future demand, assess unsold-stock exposure and explore more sustainable production decisions.</p>
+<p><b>Developed and coded by Sneha Yadav</b></p>
+<a href="#tool">Try the Inventory Tool ↓</a>
+</div>
+
+<main>
+<section class="grid">
+<div class="card"><small>Planned Production</small><strong id="kProduction">500 units</strong></div>
+<div class="card"><small>Previous Month Sales</small><strong id="kSales">420 units</strong></div>
+<div class="card"><small>Estimated Remaining Stock</small><strong id="kStock">80 units</strong></div>
+<div class="card"><small>Projected Unsold Share</small><strong id="kRisk">16%</strong></div>
+<div class="card"><small>Fabric in Projected Unsold Units</small><strong id="kFabric">24 kg</strong></div>
+<div class="card"><small>Potential Unsold Retail Value</small><strong id="kValue">₹64,000</strong></div>
+</section>
+
+<section class="layout">
+<div class="panel" id="tool">
+<h2>Inventory &amp; Sales Input</h2>
+<label for="category">Product Category</label>
+<select id="category">
+<option>Women's Tops</option>
+<option>T-Shirts</option>
+<option>Trousers</option>
+<option>Dresses</option>
+<option>Other Apparel</option>
+</select>
+
+<label for="sales">Previous Month Sales (units)</label>
+<input id="sales" type="number" min="0" step="1" value="420">
+
+<label for="production">Planned Production (units)</label>
+<input id="production" type="number" min="0" step="1" value="500">
+
+<label for="price">Selling Price per Unit (₹)</label>
+<input id="price" type="number" min="0" value="800">
+
+<label for="fabric">Fabric per Unit (kg)</label>
+<input id="fabric" type="number" min="0" step="0.01" value="0.3">
+
+<label for="trend">Assumed Monthly Demand Trend</label>
+<select id="trend">
+<option value="0">Stable (0%)</option>
+<option value="0.05" selected>Growth (+5%)</option>
+<option value="-0.05">Decline (-5%)</option>
+<option value="0.10">High Growth (+10%)</option>
+</select>
+
+<button onclick="calculate()">Calculate &amp; Analyze</button>
+</div>
+
+<div class="panel" id="forecast">
+<h2>Demand Forecast — Next 3 Months</h2>
+<div class="chart"><canvas id="forecastChart"></canvas></div>
+<p class="notice" id="insight" role="status"></p>
+</div>
+</section>
+
+<section class="layout">
+<div class="panel">
+<h2>Projected Unsold Inventory</h2>
+<div class="chart"><canvas id="riskChart"></canvas></div>
+</div>
+<div class="panel">
+<h2>Sustainability &amp; Cost Analysis</h2>
+<p id="sustainability"></p>
+<p class="notice warning">
+Unsold stock is not necessarily textile waste. Fabric weight indicates material contained in projected unsold garments, not proven waste or environmental savings.
+</p>
+</div>
+</section>
+
+<section class="panel" id="research">
+<h2>Research Evidence &amp; Methodology</h2>
+<p><b>Research objective:</b> Explore how simple demand estimates can help small apparel businesses assess production and inventory decisions.</p>
+<p><b>Forecast method:</b> Each future month's estimated demand equals previous-month demand multiplied by (1 + selected trend), compounded monthly.</p>
+<p><b>Unsold estimate:</b> Planned production minus first-month forecast demand, with a minimum of zero. The unsold share is calculated relative to planned production.</p>
+<p><b>Limitations:</b> This is a rule-based scenario calculator, not a trained machine-learning model. It does not yet account for seasonality, returns, existing inventory, promotions, lead times or uncertainty intervals. Its estimates have not been validated against real business data.</p>
+<p><b>Next research phase:</b> Test forecasts using anonymized historical sales data from consenting apparel SMEs, compare against baseline forecasting methods and report forecast error.</p>
+<p><b>Researcher &amp; Developer:</b> Sneha Yadav | 2026</p>
+</section>
+</main>
+
+<footer>
+<p><b>Fashion Inventory Intelligence</b></p>
+<p>Independent Research &amp; Web Development Project | Sneha Yadav</p>
+</footer>
+
+<script>
+let forecastChart,riskChart;
+const money=n=>"₹"+Math.round(n).toLocaleString("en-IN");
+const whole=n=>Math.round(n).toLocaleString("en-IN");
+
+function calculate(){
+const sales=Number(document.getElementById("sales").value);
+const production=Number(document.getElementById("production").value);
+const price=Number(document.getElementById("price").value);
+const fabric=Number(document.getElementById("fabric").value);
+const trend=Number(document.getElementById("trend").value);
+
+if([sales,production,price,fabric].some(v=>!Number.isFinite(v)||v<0)||
+!Number.isInteger(sales)||!Number.isInteger(production)){
+alert("Please enter valid non-negative values. Units must be whole numbers.");
+return;
+}
+
+const demand=[1,2,3].map(i=>Math.round(sales*Math.pow(1+trend,i)));
+const unsold=Math.max(0,production-demand[0]);
+const sold=Math.min(production,demand[0]);
+const share=production>0?unsold/production*100:0;
+const material=unsold*fabric;
+const value=unsold*price;
+
+document.getElementById("kProduction").textContent=whole(production)+" units";
+document.getElementById("kSales").textContent=whole(sales)+" units";
+document.getElementById("kStock").textContent=whole(unsold)+" units";
+document.getElementById("kRisk").textContent=share.toFixed(1)+"%";
+document.getElementById("kFabric").textContent=material.toFixed(2)+" kg";
+document.getElementById("kValue").textContent=money(value);
+
+document.getElementById("insight").textContent=
+"Under the selected "+(trend*100).toFixed(0)+"% monthly trend, estimated demand next month is "+
+whole(demand[0])+" units. With "+whole(production)+
+" units planned, projected unsold stock is "+whole(unsold)+
+" units ("+share.toFixed(1)+"%).";
+
+document.getElementById("sustainability").textContent=
+"Projected unsold garments contain approximately "+
+material.toFixed(2)+" kg of fabric. Their potential retail value is "+
+money(value)+". This is inventory exposure, not confirmed financial loss or discarded textile waste.";
+
+if(!window.Chart){
+document.getElementById("insight").textContent+=" Charts unavailable; numerical results remain valid.";
+return;
+}
+
+if(forecastChart)forecastChart.destroy();
+forecastChart=new Chart(document.getElementById("forecastChart"),{
+type:"bar",
+data:{
+labels:["Month 1","Month 2","Month 3"],
+datasets:[
+{label:"Estimated Demand",data:demand,backgroundColor:"#67318b",borderRadius:7},
+{label:"Planned Production (reference)",data:[production,production,production],backgroundColor:"#c8a9de",borderRadius:7}
+]},
+options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}
+});
+
+if(riskChart)riskChart.destroy();
+riskChart=new Chart(document.getElementById("riskChart"),{
+type:"doughnut",
+data:{
+labels:["Projected Sold","Projected Unsold"],
+datasets:[{data:[sold,unsold],backgroundColor:["#69b77b","#f19a9f"]}]
+},
+options:{responsive:true,maintainAspectRatio:false}
+});
+}
+calculate();
+</script>
+</body>
+</html>
