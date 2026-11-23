@@ -410,10 +410,24 @@ a{color:#3265bb}
 <script>
 "use strict";
 
+
 const storageKey="indiaChinaTradeObservatoryV2";
-let records=[];
+
+const defaultRecords=[
+  {
+    year:2020,
+    imports:65.21,
+    exports:21.19,
+    basis:"fiscal",
+    source:"Initial research dataset - verification pending",
+    url:"https://www.commerce.gov.in/"
+  }
+];
+
+let records=[...defaultRecords];
 let tradeChart=null;
 let balanceChart=null;
+
 
 try{
   const saved=JSON.parse(localStorage.getItem(storageKey)||"[]");
