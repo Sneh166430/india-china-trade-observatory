@@ -414,16 +414,29 @@ a{color:#3265bb}
 
 const storageKey="indiaChinaTradeObservatoryV3";
 
+
 const defaultRecords=[
-  {
-    year:2020,
-    imports:65.21,
-    exports:21.19,
-    basis:"fiscal",
-    source:"Research dataset - verification pending",
-    url:"https://www.commerce.gov.in/"
-  }
+  {year:2020,imports:65.21,exports:21.19,basis:"fiscal",
+   source:"DGCI&S Official Trade Report",
+   url:"https://itj.dgciskol.gov.in/sU4NmW5kxnCB2toqjXSFv00s2v7dabDcp6xjfDdb.pdf"},
+
+  {year:2021,imports:94.57,exports:21.26,basis:"fiscal",
+   source:"DGCI&S Official Trade Report",
+   url:"https://itj.dgciskol.gov.in/sU4NmW5kxnCB2toqjXSFv00s2v7dabDcp6xjfDdb.pdf"},
+
+  {year:2022,imports:98.51,exports:15.33,basis:"fiscal",
+   source:"DGCI&S Official Trade Report",
+   url:"https://itj.dgciskol.gov.in/sU4NmW5kxnCB2toqjXSFv00s2v7dabDcp6xjfDdb.pdf"},
+
+  {year:2023,imports:101.75,exports:16.67,basis:"fiscal",
+   source:"DGCI&S Official Trade Report",
+   url:"https://itj.dgciskol.gov.in/sU4NmW5kxnCB2toqjXSFv00s2v7dabDcp6xjfDdb.pdf"},
+
+  {year:2024,imports:115.15,exports:14.25,basis:"fiscal",
+   source:"DGCI&S Official Trade Report",
+   url:"https://itj.dgciskol.gov.in/sU4NmW5kxnCB2toqjXSFv00s2v7dabDcp6xjfDdb.pdf"}
 ];
+
 
 let records=[...defaultRecords];
 let tradeChart=null;
