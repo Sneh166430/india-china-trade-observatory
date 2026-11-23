@@ -411,6 +411,7 @@ a{color:#3265bb}
 "use strict";
 
 
+
 const storageKey="indiaChinaTradeObservatoryV3";
 
 const defaultRecords=[
@@ -419,7 +420,7 @@ const defaultRecords=[
     imports:65.21,
     exports:21.19,
     basis:"fiscal",
-    source:"Initial research dataset - verification pending",
+    source:"Research dataset - verification pending",
     url:"https://www.commerce.gov.in/"
   }
 ];
@@ -428,10 +429,10 @@ let records=[...defaultRecords];
 let tradeChart=null;
 let balanceChart=null;
 
-
 try{
-  const saved=JSON.parse(localStorage.getItem(storageKey)||"[]");
-  if(Array.isArray(saved)){
+  const saved=JSON.parse(localStorage.getItem(storageKey)||"null");
+
+  if(Array.isArray(saved)&&saved.length>0){
     records=saved.filter(r=>
       Number.isInteger(r.year)&&
       r.year>=1990&&r.year<=2100&&
@@ -442,10 +443,15 @@ try{
       typeof r.url==="string"&&
       /^https?:\/\//i.test(r.url)
     );
+
+    if(records.length===0){
+      records=[...defaultRecords];
+    }
   }
 }catch(error){
-  records=[];
+  records=[...defaultRecords];
 }
+
 
 function escapeHTML(value){
   return String(value).replace(/[&<>"']/g,char=>({
